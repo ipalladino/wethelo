@@ -53,7 +53,7 @@ var TopicListItem = React.createClass({
           {this.props.title}
         </td>
         <td>
-          {this.props.description.trunc(25)}
+          {this.props.description.trunc(40)}
         </td>
         <td className="centered">
           {this.props.votes != null ? this.props.votes : 0}

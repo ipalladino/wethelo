@@ -1,0 +1,18 @@
+.topic-list-item {
+  border: 1px solid #000;
+  margin-bottom:10px;
+}
+
+form input, form textarea {
+  margin-top:10px;
+  margin-bottom:10px;
+}
+
+table .actions {
+  width:200px;
+}
+
+.centered {
+  text-align: center;
+  font-weight: bolder;
+}

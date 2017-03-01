@@ -1,28 +1,15 @@
-== README
+== VotingBoard
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a very simple example of React.js combined with Rails 4.
 
-Things you may want to cover:
+In this example a UI built on React.js interacts with RESTful services set up on our Rails interface.
 
-* Ruby version
+The React.js UI source can be found on the public directory, this was included here for simplicity. Proper rails integration is still TODO.
 
-* System dependencies
+Very minimal settings required, just clone, make sure you have the right ruby/rails versions, migrate the sqlite DB and run the server.
 
-* Configuration
+* Ruby version: ruby-2.1.2
 
-* Database creation
+* Database creation: rake db:migrate
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+* Run dev server: rails s

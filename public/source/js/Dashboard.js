@@ -1,3 +1,5 @@
+//VotingBoard
+//responsible for retrieving specific Topic data and displaying it on its own section
 var ViewTopic = React.createClass({
   loadTopicFromServer : function(){
     console.log("ViewTopic:loadTopicFromServer");

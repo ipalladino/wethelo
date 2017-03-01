@@ -15,6 +15,7 @@ var ViewTopic = React.createClass({
           }
           this.state.title = data.title;
           this.state.description = data.description;
+          this.state.votes = data.votes;
           this.forceUpdate();
         }.bind(this)
       });

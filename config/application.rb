@@ -6,14 +6,8 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module Votingboard
+module Wethelo
   class Application < Rails::Application
-    config.assets.precompile += %w( topics.js )
-
-    config.action_dispatch.default_headers = {
-      'Access-Control-Allow-Origin' => 'http://localhost:8000',
-      'Access-Control-Request-Method' => %w{GET POST OPTIONS}.join(",")
-    }
 
     config.assets.cache_store = :null_store  # Disables the Asset cache
     config.sass.cache = false  # Disable the SASS compiler cache
@@ -28,5 +22,9 @@ module Votingboard
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
+    #4. If you are deploying on Heroku with Rails 3.2 only, you may want to set:
+    #config.assets.initialize_on_precompile = false
+
   end
 end

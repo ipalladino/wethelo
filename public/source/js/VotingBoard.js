@@ -4,17 +4,17 @@ String.prototype.trunc = function(n){
 };
 
 /*
-  TopicListItem
+  PlaceListItem
   responsible for taking ajax actions and displaying the items data
 */
-var TopicListItem = React.createClass({
+var PlaceListItem = React.createClass({
   //a generic ajax request
   ajaxRequest : function(type, id, action) {
     var url;
     if(action == "delete") {
-      url = "//localhost:3000/topics/"+id+".json";
+      url = "//localhost:3000/places/"+id+".json";
     } else {
-      url = "//localhost:3000/topics/"+id+"/"+action;
+      url = "//localhost:3000/places/"+id+"/"+action;
     }
 
     $.ajax({
@@ -22,31 +22,31 @@ var TopicListItem = React.createClass({
       url : url,
       dataType : "json",
       success : function(){
-        votingBoard.loadTopicsFromServer();
+        votingBoard.loadPlacesFromServer();
       }
     });
   },
   deleteItem : function() {
-    console.log("TopicListItem:deleteItem");
+    console.log("PlaceListItem:deleteItem");
     var id = this.props.itemId;
     this.ajaxRequest("DELETE",id,"delete");
   },
   upvoteItem : function() {
-    console.log("TopicListItem:upvoteItem");
+    console.log("PlaceListItem:upvoteItem");
     var id = this.props.itemId;
     this.ajaxRequest("POST",id,"upvote");
   },
   downvoteItem : function(e) {
-    console.log("TopicListItem:downvoteItem");
+    console.log("PlaceListItem:downvoteItem");
     var id = this.props.itemId;
     this.ajaxRequest("POST",id,"downvote");
   },
   viewItem : function(){
-    console.log("TopicListItem:viewItem");
-    viewTopic.setId(this.props.itemId);
+    console.log("PlaceListItem:viewItem");
+    viewPlace.setId(this.props.itemId);
   },
   render: function() {
-    console.log("TopicListItem:render");
+    console.log("PlaceListItem:render");
     return (
       <tr>
         <td>
@@ -70,24 +70,24 @@ var TopicListItem = React.createClass({
 });
 
 /*
-  TopicList
+  PlaceList
   responsible for sorting and rendering the list
 */
-var TopicList = React.createClass({
+var PlaceList = React.createClass({
   render: function() {
-    console.log("TopicList:render");
+    console.log("PlaceList:render");
     var sorted = this.props.data.sort(function(a, b) {
       return b.votes - a.votes;
     });
-    var topicNodes = sorted.map(function (topic) {
+    var placeNodes = sorted.map(function (place) {
       return (
-        <TopicListItem
-          title={topic.title}
-          description={topic.description}
-          itemId={topic.id}
-          votes={topic.votes}
-          key={topic.id}>
-        </TopicListItem>
+        <PlaceListItem
+          title={place.title}
+          description={place.description}
+          itemId={place.id}
+          votes={place.votes}
+          key={place.id}>
+        </PlaceListItem>
       );
     });
     return (
@@ -100,7 +100,7 @@ var TopicList = React.createClass({
               <th>Votes</th>
               <th>Actions</th>
             </tr>
-            {topicNodes}
+            {placeNodes}
           </tbody>
         </table>
       </div>
@@ -117,14 +117,14 @@ var VotingBoard = React.createClass({
   componentDidMount :function(){
     console.log("VotingBoard:componentDidMount");
     //if we wanted to load at an interval uncomment this line - ideally this would happen via websockets
-    //setInterval(this.loadTopicsFromServer, this.props.pollInterval);
-    this.loadTopicsFromServer();
+    //setInterval(this.loadPlacesFromServer, this.props.pollInterval);
+    this.loadPlacesFromServer();
   },
-  loadTopicsFromServer : function(){
-    console.log("VotingBoard:loadTopicsFromServer");
+  loadPlacesFromServer : function(){
+    console.log("VotingBoard:loadPlacesFromServer");
     var scope = this;
     $.ajax({
-      url : "//localhost:3000/topics.json",
+      url : "//localhost:3000/places.json",
       dataType : "json",
       success : function(data){
         if(this.state == null) {
@@ -154,7 +154,7 @@ var VotingBoard = React.createClass({
     if(typeof(this.state.items) === "object") {
       return (
         <div>
-          <TopicList data={this.state.items} />
+          <PlaceList data={this.state.items} />
         </div>
       )
     } else {

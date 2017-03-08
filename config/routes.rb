@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  resources :topics  do
+  devise_for :users
+  resources :users
+
+  resources :places  do
     member do
       post 'upvote'
       post 'downvote'

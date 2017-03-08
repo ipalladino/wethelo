@@ -1,10 +1,10 @@
-<%= form_for(@topic) do |f| %>
-  <% if @topic.errors.any? %>
+<%= form_for(@place) do |f| %>
+  <% if @place.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@topic.errors.count, "error") %> prohibited this topic from being saved:</h2>
+      <h2><%= pluralize(@place.errors.count, "error") %> prohibited this place from being saved:</h2>
 
       <ul>
-      <% @topic.errors.full_messages.each do |message| %>
+      <% @place.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
       </ul>

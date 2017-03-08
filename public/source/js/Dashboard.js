@@ -1,13 +1,13 @@
 //VotingBoard
-//responsible for retrieving specific Topic data and displaying it on its own section
-var ViewTopic = React.createClass({
-  loadTopicFromServer : function(){
-    console.log("ViewTopic:loadTopicFromServer");
+//responsible for retrieving specific Place data and displaying it on its own section
+var ViewPlace = React.createClass({
+  loadPlaceFromServer : function(){
+    console.log("ViewPlace:loadPlaceFromServer");
     if(this.state.itemId != undefined) {
       $.ajax({
         type : "GET",
         contentType: "application/json",
-        url : "//localhost:3000/topics/"+this.state.itemId+".json",
+        url : "//localhost:3000/places/"+this.state.itemId+".json",
         dataType : "json",
         success : function(data) {
           if(this.state == undefined) {
@@ -23,16 +23,16 @@ var ViewTopic = React.createClass({
   },
 
   setId :function(id){
-    console.log("ViewTopic:setId");
+    console.log("ViewPlace:setId");
     if(this.state == null) {
       this.state = {}
     }
     this.state.itemId = id;
-    this.loadTopicFromServer();
+    this.loadPlaceFromServer();
   },
 
   render: function() {
-    console.log("ViewTopic:render");
+    console.log("ViewPlace:render");
     if(this.state == null) {
       return (
         <div>
@@ -53,9 +53,9 @@ var ViewTopic = React.createClass({
   }
 });
 
-var CreateNewTopic = React.createClass({
+var CreateNewPlace = React.createClass({
   submitForm : function(e) {
-    console.log("CreateNewTopic:submitForm");
+    console.log("CreateNewPlace:submitForm");
     e.preventDefault();
     var currentEl = ReactDOM.findDOMNode(this);
     var data = {};
@@ -64,26 +64,26 @@ var CreateNewTopic = React.createClass({
     $.ajax({
       type : "POST",
       contentType: "application/json",
-      url : "//localhost:3000/topics",
+      url : "//localhost:3000/places",
       dataType : "json",
       data : JSON.stringify(data),
       success : function(data) {
-        votingBoard.loadTopicsFromServer();
+        votingBoard.loadPlacesFromServer();
       }
     });
   },
   render: function() {
-    console.log("CreateNewTopic:render");
+    console.log("CreateNewPlace:render");
     return (
       <div>
-        <form action="localhost:3000/topics" method="post">
+        <form action="localhost:3000/places" method="post">
           <div>
-            <input placeholder="Topic Title" className="form-control" name="title" type="text" />
+            <input placeholder="Place Title" className="form-control" name="title" type="text" />
           </div>
           <div>
-            <textarea placeholder="Topic Description" className="form-control" name="description" type="text"></textarea>
+            <textarea placeholder="Place Description" className="form-control" name="description" type="text"></textarea>
           </div>
-          <a className="btn btn-default" onClick={this.submitForm} href="#" role="button">Create New Topic</a>
+          <a className="btn btn-default" onClick={this.submitForm} href="#" role="button">Create New Place</a>
         </form>
       </div>
     )
@@ -91,12 +91,12 @@ var CreateNewTopic = React.createClass({
 });
 
 
-var createNewTopic = ReactDOM.render(
-  <CreateNewTopic />,
-  document.getElementById('create-topic')
+var createNewPlace = ReactDOM.render(
+  <CreateNewPlace />,
+  document.getElementById('create-place')
 );
 
-var viewTopic = ReactDOM.render(
-  <ViewTopic />,
-  document.getElementById('view-topic')
+var viewPlace = ReactDOM.render(
+  <ViewPlace />,
+  document.getElementById('view-place')
 );

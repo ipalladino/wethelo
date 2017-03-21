@@ -54,6 +54,18 @@ var ViewPlace = React.createClass({
 });
 
 var CreateNewPlace = React.createClass({
+  componentDidMount: function() {
+    var autocomplete;
+    autocomplete = new google.maps.places.Autocomplete(
+      (document.getElementById('autocomplete')),
+      { types: ['geocode'] }
+    );
+    google.maps.event.addListener(autocomplete, 'place_changed', function(e) {
+      var place = autocomplete.getPlace();
+      document.getElementById('lat').value = place.geometry.location.lat();
+      document.getElementById('lng').value = place.geometry.location.lng();
+    });
+  },
   submitForm : function(e) {
     console.log("CreateNewPlace:submitForm");
     e.preventDefault();
@@ -81,7 +93,12 @@ var CreateNewPlace = React.createClass({
             <input placeholder="Place Title" className="form-control" name="title" type="text" />
           </div>
           <div>
-            <textarea placeholder="Place Description" className="form-control" name="description" type="text"></textarea>
+            <input id="autocomplete" type="text" placeholder="Place Address" className="form-control" name="address"></input>
+            <input type="hidden" name="lat" id="lat"></input>
+            <input type="hidden" name="lng" id="lng"></input>
+          </div>
+          <div>
+            <textarea placeholder="Place Description" className="form-control" name="description" ></textarea>
           </div>
           <a className="btn btn-default" onClick={this.submitForm} href="#" role="button">Create New Place</a>
         </form>

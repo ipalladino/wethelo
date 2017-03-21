@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :votes
+
   devise_for :users
   resources :users
 
@@ -8,6 +10,9 @@ Rails.application.routes.draw do
       post 'downvote'
     end
   end
+
+  get 'recommendations' => 'recommendations#index'
+  root 'recommendations#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

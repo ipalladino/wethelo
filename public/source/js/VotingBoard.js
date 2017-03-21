@@ -55,8 +55,14 @@ var PlaceListItem = React.createClass({
         <td>
           {this.props.description.trunc(40)}
         </td>
+        <td>
+          {this.props.lat}
+        </td>
+        <td>
+          {this.props.lng}
+        </td>
         <td className="centered">
-          {this.props.votes != null ? this.props.votes : 0}
+          {this.props.recommendations != null ? this.props.recommendations : 0}
         </td>
         <td className='actions'>
           <a href={"#"+this.props.itemId} className="btn btn-danger" onClick={this.deleteItem}><span className="glyphicon glyphicon-trash"></span></a>&nbsp;
@@ -77,7 +83,7 @@ var PlaceList = React.createClass({
   render: function() {
     console.log("PlaceList:render");
     var sorted = this.props.data.sort(function(a, b) {
-      return b.votes - a.votes;
+      return b.recommendations - a.recommendations;
     });
     var placeNodes = sorted.map(function (place) {
       return (
@@ -85,7 +91,9 @@ var PlaceList = React.createClass({
           title={place.title}
           description={place.description}
           itemId={place.id}
-          votes={place.votes}
+          lat={place.lat}
+          lng={place.lng}
+          recommendations={place.recommendations}
           key={place.id}>
         </PlaceListItem>
       );
@@ -97,7 +105,9 @@ var PlaceList = React.createClass({
             <tr>
               <th>Title</th>
               <th>Description</th>
-              <th>Votes</th>
+              <th>Latitude</th>
+              <th>Longitude</th>
+              <th>Recommendations</th>
               <th>Actions</th>
             </tr>
             {placeNodes}

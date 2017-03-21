@@ -2,16 +2,55 @@ class PlacesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :set_place, only: [:show, :edit, :update, :destroy]
 
+  #a user can upvote a place only once, it will create a vote entry, relative to user and place
   def upvote
     if !user_signed_in?
       redirect_to "/sign_in", status: 302, data: { no_turbolink: true }
       return
     end
+
+    @place = Place.find(params["id"])
+
+    #if the place is found
+    if(@place)
+      votes = @place.votes.where(user_id: current_user.id)
+      if(votes.length == 1)
+        render json: "{'status' : 'already-voted'}", status: :ok, location: @place
+        return
+        #user already voted
+      elsif (votes.length > 1)
+        #user tricked
+        logger.fatal "The user voted more than once!"
+      else
+        #user can vote!
+        @v = Vote.new(user_id: current_user.id, place_id: @place.id)
+      end
+    end
+
+    #if(place.recommendations == nil)
+    #  place.recommendations = 1
+    #else
+    #  place.recommendations = place.recommendations+1;
+    #end
+    #@place = place
+
+    respond_to do |format|
+      if @v.save
+        format.html { redirect_to @place, notice: 'Place was successfully updated.' }
+        format.json { render :show, status: :ok, location: @place }
+      else
+        format.html { render :edit }
+        format.json { render json: @place.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def downvote
     place = Place.find(params["id"])
-    if(place.votes == nil)
-      place.votes = 1
+    if(place.recommendations == nil)
+      place.recommendations = -1
     else
-      place.votes = place.votes+1;
+      place.recommendations = place.recommendations-1;
     end
     @place = place
     respond_to do |format|
@@ -25,24 +64,7 @@ class PlacesController < ApplicationController
     end
   end
 
-  def downvote
-    place = Place.find(params["id"])
-    if(place.votes == nil)
-      place.votes = -1
-    else
-      place.votes = place.votes-1;
-    end
-    @place = place
-    respond_to do |format|
-      if @place.save
-        format.html { redirect_to @place, notice: 'Place was successfully updated.' }
-        format.json { render :show, status: :ok, location: @place }
-      else
-        format.html { render :edit }
-        format.json { render json: @place.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+
 
   # GET /places
   # GET /places.json
@@ -112,6 +134,6 @@ class PlacesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def place_params
-      params.require(:place).permit(:title, :description, :votes)
+      params.require(:place).permit(:title, :description, :lat, :lng, :address)
     end
 end

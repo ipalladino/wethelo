@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Voting Board</title>
+    <link rel="stylesheet" href="/source/css/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQwTUh4AiyaDuCkTyw3CfUIGkPoCNrSA4&libraries=places" async defer></script>
+  </head>
+  <body>
+    <h1>VotingBoard</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div id="voting-board">
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2>Dashboard</h2>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6">
+          <h2>Create Place</h2>
+          <div id="create-place" style="border-top:2px solid #000">
+
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <h2>View Place</h2>
+          <div id="view-place" style="border-top:2px solid #000; padding-top:10px;">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" charset="utf-8"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://unpkg.com/react@15/dist/react.js"></script>
+  <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+  <script type="text/babel" src="source/js/VotingBoard.js" charset="utf-8"></script>
+  <script type="text/babel" src="source/js/Dashboard.js" charset="utf-8"></script>
+</html>
+<!-- python -m SimpleHTTPServer 8000 -->

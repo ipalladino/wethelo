@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170320070151) do
+ActiveRecord::Schema.define(version: 20170327034026) do
 
   create_table "places", force: true do |t|
     t.string   "title"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20170320070151) do
     t.integer  "place_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "votetype",   default: 0
   end
 
   add_index "votes", ["place_id"], name: "index_votes_on_place_id"

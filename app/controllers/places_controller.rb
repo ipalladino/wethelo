@@ -2,8 +2,8 @@ class PlacesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :set_place, only: [:show, :edit, :update, :destroy]
 
-  #a user can upvote a place only once, it will create a vote entry, relative to user and place
-  def upvote
+  #a user can recommend a place only once, it will create a vote entry, relative to user and place
+  def recommend
     if !user_signed_in?
       redirect_to "/sign_in", status: 302, data: { no_turbolink: true }
       return
@@ -13,7 +13,7 @@ class PlacesController < ApplicationController
 
     #if the place is found
     if(@place)
-      votes = @place.votes.where(user_id: current_user.id)
+      votes = @place.votes.where(user_id: current_user.id, votetype: 0)
       if(votes.length == 1)
         render json: "{'status' : 'already-voted'}", status: :ok, location: @place
         return
@@ -45,23 +45,41 @@ class PlacesController < ApplicationController
     end
   end
 
-  def downvote
-    place = Place.find(params["id"])
-    if(place.recommendations == nil)
-      place.recommendations = -1
-    else
-      place.recommendations = place.recommendations-1;
+  def remove_recommendation
+    if !user_signed_in?
+      redirect_to "/sign_in", status: 302, data: { no_turbolink: true }
+      return
     end
-    @place = place
-    respond_to do |format|
-      if @place.save
-        format.html { redirect_to @place, notice: 'Place was successfully updated.' }
-        format.json { render :show, status: :ok, location: @place }
+
+    @place = Place.find(params["id"])
+
+    #if the place is found
+    if(@place)
+      votes = @place.votes.where(user_id: current_user.id, votetype: 0)
+      if(votes.length == 1)
+        respond_to do |format|
+          if votes[0].destroy
+            format.html
+            format.json { render :show, status: :ok, location: @place }
+          else
+            format.html
+            format.json { render json: @place.errors, status: :unprocessable_entity }
+          end
+        end
+
+        return
+        #user already voted
+      elsif (votes.length > 1)
+        #user tricked
+        logger.fatal "The user voted more than once!"
       else
-        format.html { render :edit }
-        format.json { render json: @place.errors, status: :unprocessable_entity }
+        #user can vote!
+        #nothing to do
       end
     end
+
+    render json: "{'status' : 'nothing-happened'}", status: :ok, location: @place
+    return
   end
 
 

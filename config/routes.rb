@@ -6,12 +6,15 @@ Rails.application.routes.draw do
 
   resources :places  do
     member do
-      post 'upvote'
-      post 'downvote'
+      post 'recommend'
+      post 'remove_recommendation'
     end
   end
 
   get 'recommendations' => 'recommendations#index'
+  get 'recommendations/:id/like' => 'recommendations#like_recommendation'
+  get 'recommendations/:id/dislike' => 'recommendations#dislike_recommendation'
+
   root 'recommendations#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

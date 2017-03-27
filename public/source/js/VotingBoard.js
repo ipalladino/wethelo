@@ -17,13 +17,22 @@ var PlaceListItem = React.createClass({
       url = "//localhost:3000/places/"+id+"/"+action;
     }
 
+    if(action == "like" || action == "dislike") {
+      url = "//localhost:3000/recommendations/"+id+"/"+action;
+    }
+
     $.ajax({
       type : type,
       url : url,
       dataType : "json",
       success : function(){
-        votingBoard.loadPlacesFromServer();
+        //votingBoard.loadPlacesFromServer();
       }
+    }).done(function(r){
+      console.log(r);
+      votingBoard.loadPlacesFromServer();
+    }).fail(function(e) {
+      console.log(e);
     });
   },
   deleteItem : function() {
@@ -31,19 +40,60 @@ var PlaceListItem = React.createClass({
     var id = this.props.itemId;
     this.ajaxRequest("DELETE",id,"delete");
   },
-  upvoteItem : function() {
-    console.log("PlaceListItem:upvoteItem");
+  recommendPlace : function() {
+    console.log("PlaceListItem:recommendPlace");
     var id = this.props.itemId;
-    this.ajaxRequest("POST",id,"upvote");
+    this.ajaxRequest("POST",id,"recommend");
   },
-  downvoteItem : function(e) {
-    console.log("PlaceListItem:downvoteItem");
+  removeRecommendationFromPlace : function(e) {
+    console.log("PlaceListItem:removeRecommendationFromPlace");
     var id = this.props.itemId;
-    this.ajaxRequest("POST",id,"downvote");
+    this.ajaxRequest("POST",id,"remove_recommendation");
+  },
+  likeRecommendation : function(e) {
+    console.log("PlaceListItem:likeRecommendation");
+    var id = this.props.itemId;
+    this.ajaxRequest("GET",id,"like");
+  },
+  dislikeRecommendation : function(e) {
+    console.log("PlaceListItem:dislikeRecommendation");
+    var id = this.props.itemId;
+    this.ajaxRequest("GET",id,"dislike");
   },
   viewItem : function(){
     console.log("PlaceListItem:viewItem");
     viewPlace.setId(this.props.itemId);
+  },
+  userRecommendHTML: function(){
+    if(this.props.recByUser) {
+      return (<a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.removeRecommendationFromPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+    } else {
+      return (<a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.recommendPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+    }
+  },
+  userLikedRecommendationHTML : function(){
+    if(this.props.likedStatus == 1) {
+      return (
+        <div>
+          <a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
+          <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
+        </div>
+      )
+    } else if(this.props.likedStatus == -1){
+      return (
+        <div>
+          <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
+          <a href={"#"+this.props.itemId} className="btn btn-danger" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
+          <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
+        </div>
+      )
+    }
   },
   render: function() {
     console.log("PlaceListItem:render");
@@ -66,9 +116,9 @@ var PlaceListItem = React.createClass({
         </td>
         <td className='actions'>
           <a href={"#"+this.props.itemId} className="btn btn-danger" onClick={this.deleteItem}><span className="glyphicon glyphicon-trash"></span></a>&nbsp;
-          <a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.upvoteItem}><span className="glyphicon glyphicon-arrow-up"></span></a>&nbsp;
-          <a href={"#"+this.props.itemId} className="btn btn-warning" onClick={this.downvoteItem}><span className="glyphicon glyphicon-arrow-down"></span></a>&nbsp;
+          {this.userRecommendHTML()}&nbsp;
           <a href={"#"+this.props.itemId} className="btn btn-info" onClick={this.viewItem}><span className="glyphicon glyphicon-zoom-in"></span></a>
+          {this.userLikedRecommendationHTML()}
         </td>
       </tr>
     )
@@ -94,6 +144,8 @@ var PlaceList = React.createClass({
           lat={place.lat}
           lng={place.lng}
           recommendations={place.recommendations}
+          recByUser={place.user_recommended}
+          likedStatus={place.liked_status}
           key={place.id}>
         </PlaceListItem>
       );

@@ -20,8 +20,6 @@ if user_signed_in?
 end
 
 
-
-
 json.extract! place, :id, :title, :description, :recommendations, :votes, :lat, :recommendations, :lng, :created_at, :updated_at
 json.url place_url(place, format: :json)
 json.user_recommended user_recommended

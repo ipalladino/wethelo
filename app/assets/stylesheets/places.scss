@@ -1,0 +1,17 @@
+.place {
+  font-family: "Helvetica Neue";
+  border:1px solid #ccc;
+  margin-bottom:10px;
+  padding:10px;
+  .place-image {
+    height:100px;
+    background-color:#ccc;
+    margin-left:-10px;
+    margin-right:-10px;
+    margin-top:-10px;
+  }
+  .title {
+    margin-top:10px;
+    font-weight: 600;
+  }
+}

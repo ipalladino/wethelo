@@ -13,5 +13,11 @@ $(function(){
       document.getElementById('lat').value = place.geometry.location.lat();
       document.getElementById('lng').value = place.geometry.location.lng();
     });
+
+    $('#generic-autocomplete').bind('keypress', function(e) {
+      if ((e.keyCode || e.which) == 13) {
+        e.preventDefault();
+      }
+    });
   }
 });

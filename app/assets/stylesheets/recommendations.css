@@ -11,4 +11,6 @@
  * file per style scope.
  *
  *= require defaults
+ *= require places
+ *= require header
 */

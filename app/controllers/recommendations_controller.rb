@@ -25,9 +25,18 @@ class RecommendationsController < ApplicationController
           render json: v, status: :ok, location: @place
           return
         else
-          puts "not set, updating"
+          puts "Vote was negative, now its positive, updating"
           v.amount = 1;
           v.save
+
+          puts "WOHOO!! reputation gain for all users who recommended!"
+          votes.each do |vote|
+            puts "User #{vote.user.username} gets reputation!"
+            u = vote.user
+            u.reputation = u.reputation != nil ? u.reputation+1 : 1
+            u.save
+          end
+
           render v, status: :ok, location: @place
           return
         end
@@ -39,6 +48,15 @@ class RecommendationsController < ApplicationController
         #user can vote!
         puts "user can vote!"
         @v = Vote.new(user_id: current_user.id, place_id: @place.id, votetype: 1, amount: 1)
+
+        puts "WOHOO!! reputation gain for all users who recommended!"
+        votes.each do |vote|
+          puts "User #{vote.user.username} gets reputation!"
+          u = vote.user
+          u.reputation = u.reputation != nil ? u.reputation+1 : 1
+          u.save
+        end
+
         puts @v.amount
       end
     end
@@ -83,6 +101,15 @@ class RecommendationsController < ApplicationController
           puts "not set, updating"
           v.amount = -1;
           v.save
+
+          puts "WOHOO!! reputation gain for all users who recommended!"
+          votes.each do |vote|
+            puts "User #{vote.user.username} gets reputation!"
+            u = vote.user
+            u.reputation = u.reputation != nil ? u.reputation-1 : -1
+            u.save
+          end
+
           render json: v, status: :ok, data: { no_turbolink: true }
           return
         end
@@ -94,7 +121,14 @@ class RecommendationsController < ApplicationController
         #user can vote!
         puts "user can vote!"
         @v = Vote.new(user_id: current_user.id, place_id: @place.id, votetype: 1, amount: -1)
-        puts @v.amount
+
+        puts "WOHOO!! reputation gain for all users who recommended!"
+        votes.each do |vote|
+          puts "User #{vote.user.username} gets reputation!"
+          u = vote.user
+          u.reputation = u.reputation != nil ? u.reputation-1 : -1
+          u.save
+        end
       end
     end
 

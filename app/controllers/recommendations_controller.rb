@@ -16,28 +16,35 @@ class RecommendationsController < ApplicationController
     #if the place is found
     if(@place)
       puts "search for likes of current_user"
+      #first we verify on liked/disliked if the user already did it
       votes = @place.votes.where(user_id: current_user.id, votetype: 1)
       if(votes.length == 1)
+        #the user already did it
         puts "Found!"
         v = votes[0]
+        #lets see if it was possitive
         if(v.amount == 1)
+          #it was possitive, nothing to do
           puts "already set"
-          render json: v, status: :ok, location: @place
+          render json: @place, status: :ok, location: @place
           return
         else
+          #it was negative, we need to update it
           puts "Vote was negative, now its positive, updating"
           v.amount = 1;
           v.save
 
           puts "WOHOO!! reputation gain for all users who recommended!"
-          votes.each do |vote|
-            puts "User #{vote.user.username} gets reputation!"
-            u = vote.user
+          #we gotta make sure its the only ones that actually RECOMMENDED
+          recommendations = @place.votes.where(votetype: 0)
+          recommendations.each do |recommendation|
+            puts "User #{recommendation.user.username} gets reputation!"
+            u = recommendation.user
             u.reputation = u.reputation != nil ? u.reputation+1 : 1
             u.save
           end
 
-          render v, status: :ok, location: @place
+          render :show, status: :ok, location: @place, template: "places/show"
           return
         end
         #user already voted
@@ -50,32 +57,22 @@ class RecommendationsController < ApplicationController
         @v = Vote.new(user_id: current_user.id, place_id: @place.id, votetype: 1, amount: 1)
 
         puts "WOHOO!! reputation gain for all users who recommended!"
-        votes.each do |vote|
-          puts "User #{vote.user.username} gets reputation!"
-          u = vote.user
+        #we gotta make sure its the only ones that actually RECOMMENDED
+        recommendations = @place.votes.where(votetype: 0)
+        recommendations.each do |recommendation|
+          puts "User #{recommendation.user.username} gets reputation!"
+          u = recommendation.user
           u.reputation = u.reputation != nil ? u.reputation+1 : 1
           u.save
         end
-
-        puts @v.amount
       end
     end
 
     if @v.save
-      render json: @v, status: :ok
+      render :show, status: :ok, location: @place, template: "places/show"
     else
-      render json: @v, status: :error
+      render :show, status: :error, location: @place, template: "places/show"
     end
-
-    # respond_to do |format|
-    #   if @v.save
-    #     format.html { redirect_to @place, notice: 'Place was successfully updated.' }
-    #     format.json { render :show, status: :ok, location: @place }
-    #   else
-    #     format.html { render :edit }
-    #     format.json { render json: @place.errors, status: :unprocessable_entity }
-    #   end
-    # end
   end
 
   def dislike_recommendation
@@ -95,22 +92,23 @@ class RecommendationsController < ApplicationController
         v = votes[0]
         if(v.amount == -1)
           puts "already set"
-          render json: v, status: :ok
+          render json: @place, status: :ok
           return
         else
           puts "not set, updating"
           v.amount = -1;
           v.save
 
-          puts "WOHOO!! reputation gain for all users who recommended!"
-          votes.each do |vote|
-            puts "User #{vote.user.username} gets reputation!"
-            u = vote.user
+          puts "WOHOO!! reputation loss for all users who recommended!"
+          recommendations = @place.votes.where(votetype: 0)
+          recommendations.each do |recommendation|
+            puts "User #{recommendation.user.username} gets reputation!"
+            u = recommendation.user
             u.reputation = u.reputation != nil ? u.reputation-1 : -1
             u.save
           end
 
-          render json: v, status: :ok, data: { no_turbolink: true }
+          render :show, status: :ok, location: @place, template: "places/show"
           return
         end
         #user already voted
@@ -122,10 +120,11 @@ class RecommendationsController < ApplicationController
         puts "user can vote!"
         @v = Vote.new(user_id: current_user.id, place_id: @place.id, votetype: 1, amount: -1)
 
-        puts "WOHOO!! reputation gain for all users who recommended!"
-        votes.each do |vote|
-          puts "User #{vote.user.username} gets reputation!"
-          u = vote.user
+        puts "WOHOO!! reputation loss for all users who recommended!"
+        recommendations = @place.votes.where(votetype: 0)
+        recommendations.each do |recommendation|
+          puts "User #{recommendation.user.username} gets reputation!"
+          u = recommendation.user
           u.reputation = u.reputation != nil ? u.reputation-1 : -1
           u.save
         end
@@ -133,9 +132,9 @@ class RecommendationsController < ApplicationController
     end
 
     if @v.save
-      render json: @v, status: :ok
+      render :show, status: :ok, location: @place, template: "places/show"
     else
-      render json: @v, status: :error
+      render :show, status: :error, location: @place, template: "places/show"
     end
   end
 

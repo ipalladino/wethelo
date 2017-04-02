@@ -107,6 +107,51 @@ var CreateNewPlace = React.createClass({
   }
 });
 
+var UserHeaderInfo = React.createClass({
+  getInitialState : function() {
+    return {
+      user : undefined
+    }
+  },
+  componentDidMount: function() {
+    this.getUserFromServer();
+  },
+  getUserFromServer : function(){
+    var scope = this;
+    $.ajax({
+      type : "GET",
+      contentType: "application/json",
+      url : "/user/me",
+      dataType : "json",
+      success : function(data) {
+        scope.setState({
+          user : data
+        })
+      },
+      error : function(data){
+        scope.setState({
+          user : undefined
+        })
+      },
+    });
+  },
+  render: function() {
+    if(this.state.user != undefined) {
+      return (
+        <span>{this.state.user.username}({this.state.user.reputation})</span>
+      )
+    } else {
+      return (
+        <span>Not Logged In</span>
+      )
+    }
+  }
+});
+
+var userHeaderInfo = ReactDOM.render(
+  <UserHeaderInfo />,
+  document.getElementById('username')
+);
 
 var createNewPlace = ReactDOM.render(
   <CreateNewPlace />,

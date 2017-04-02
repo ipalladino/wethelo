@@ -11,6 +11,7 @@ var PlaceListItem = React.createClass({
   //a generic ajax request
   ajaxRequest : function(type, id, action) {
     var url;
+    var scope = this;
     if(action == "delete") {
       url = "//localhost:3000/places/"+id+".json";
     } else {
@@ -30,7 +31,13 @@ var PlaceListItem = React.createClass({
       }
     }).done(function(r){
       console.log(r);
-      votingBoard.loadPlacesFromServer();
+      //if its: like | dislike | recommend | remove_recommendation - use set state
+      if(action == "like" || action == "dislike" || action == "recommend" || action == "remove_recommendation") {
+        scope.setState(r);
+      } else {
+        votingBoard.loadPlacesFromServer();
+      }
+      userHeaderInfo.getUserFromServer();
     }).fail(function(e) {
       console.log(e);
     });
@@ -65,34 +72,70 @@ var PlaceListItem = React.createClass({
     viewPlace.setId(this.props.itemId);
   },
   userRecommendHTML: function(){
-    if(this.props.recByUser) {
-      return (<a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.removeRecommendationFromPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+    if(this.state != undefined) {
+      //state is set, use state instead of props
+      if(this.state.user_recommended) {
+        return (<a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.removeRecommendationFromPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+      } else {
+        return (<a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.recommendPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+      }
     } else {
-      return (<a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.recommendPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+      if(this.props.recByUser) {
+        return (<a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.removeRecommendationFromPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+      } else {
+        return (<a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.recommendPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+      }
     }
+
   },
   userLikedRecommendationHTML : function(){
-    if(this.props.likedStatus == 1) {
-      return (
-        <div>
-          <a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
-          <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
-        </div>
-      )
-    } else if(this.props.likedStatus == -1){
-      return (
-        <div>
-          <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
-          <a href={"#"+this.props.itemId} className="btn btn-danger" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
-        </div>
-      )
+    if(this.state != undefined) {
+      //state is set, use state instead of props
+      if(this.state.liked_status == 1) {
+        return (
+          <div>
+            <a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
+            <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
+          </div>
+        )
+      } else if(this.state.liked_status == -1){
+        return (
+          <div>
+            <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
+            <a href={"#"+this.props.itemId} className="btn btn-danger" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
+          </div>
+        )
+      } else {
+        return (
+          <div>
+            <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
+            <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
+          </div>
+        )
+      }
     } else {
-      return (
-        <div>
-          <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
-          <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
-        </div>
-      )
+      if(this.props.likedStatus == 1) {
+        return (
+          <div>
+            <a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
+            <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
+          </div>
+        )
+      } else if(this.props.likedStatus == -1){
+        return (
+          <div>
+            <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
+            <a href={"#"+this.props.itemId} className="btn btn-danger" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
+          </div>
+        )
+      } else {
+        return (
+          <div>
+            <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.likeRecommendation}><span className="glyphicon glyphicon-thumbs-up"></span></a>
+            <a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.dislikeRecommendation}><span className="glyphicon glyphicon-thumbs-down"></span></a>
+          </div>
+        )
+      }
     }
   },
   render: function() {

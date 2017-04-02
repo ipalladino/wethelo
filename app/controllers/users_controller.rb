@@ -7,6 +7,26 @@ class UsersController < ApplicationController
     @users = User.all
   end
 
+  # GET /users/me
+  # GET /users/me.json
+  def me
+    if !user_signed_in?
+      respond_to do |format|
+        format.html { render :text => "404 Not found", :status => 404 }
+        format.json { render :json => {:error => "not-found"}.to_json, :status => 404 }
+      end
+      return
+    end
+
+    puts "find current_user with id #{current_user.id}"
+    @user = current_user
+
+    respond_to do |format|
+      format.html { redirect_to @user, notice: 'Show Current User.' }
+      format.json { render :show, status: :ok, location: @user }
+    end
+  end
+
   # GET /users/1
   # GET /users/1.json
   def show

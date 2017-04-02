@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       get 'profile'
     end
   end
+  get 'user/me' => 'users#me'
 
   resources :places  do
     member do

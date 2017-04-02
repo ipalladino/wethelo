@@ -23,16 +23,9 @@ class PlacesController < ApplicationController
         logger.fatal "The user voted more than once!"
       else
         #user can vote!
-        @v = Vote.new(user_id: current_user.id, place_id: @place.id)
+        @v = Vote.new(user_id: current_user.id, place_id: @place.id, votetype: 0)
       end
     end
-
-    #if(place.recommendations == nil)
-    #  place.recommendations = 1
-    #else
-    #  place.recommendations = place.recommendations+1;
-    #end
-    #@place = place
 
     respond_to do |format|
       if @v.save

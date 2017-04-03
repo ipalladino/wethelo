@@ -9,6 +9,7 @@ Bundler.require(*Rails.groups)
 module Wethelo
   class Application < Rails::Application
 
+    config.active_record.raise_in_transactional_callbacks = true
     config.assets.cache_store = :null_store  # Disables the Asset cache
     config.sass.cache = false  # Disable the SASS compiler cache
     # Settings in config/environments/* take precedence over those specified here.
@@ -25,6 +26,17 @@ module Wethelo
 
     #4. If you are deploying on Heroku with Rails 3.2 only, you may want to set:
     #config.assets.initialize_on_precompile = false
+
+    config.paperclip_defaults = {
+      storage: :s3,
+      s3_credentials: {
+        bucket: "wethelo",
+        access_key_id: ENV.fetch('S3_KEY'),
+        secret_access_key: ENV.fetch('S3_SECRET'),
+        s3_region: ENV.fetch('S3_REGION'),
+        s3_host_name: "s3-#{ENV['S3_REGION']}.amazonaws.com"
+      }
+    }
 
   end
 end

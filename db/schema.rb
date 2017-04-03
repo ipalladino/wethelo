@@ -11,43 +11,56 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170402192050) do
+ActiveRecord::Schema.define(version: 20170402225131) do
 
-  create_table "places", force: true do |t|
-    t.string   "title"
+  create_table "placepictures", force: :cascade do |t|
     t.string   "description"
+    t.string   "image"
+    t.integer  "place_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
+  end
+
+  create_table "places", force: :cascade do |t|
+    t.string   "title",           limit: 255
+    t.string   "description",     limit: 255
     t.integer  "recommendations"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "lat",             precision: 10, scale: 6
-    t.decimal  "lng",             precision: 10, scale: 6
+    t.decimal  "lat",                         precision: 10, scale: 6
+    t.decimal  "lng",                         precision: 10, scale: 6
     t.float    "reputation"
+    t.string   "address"
   end
 
-  create_table "users", force: true do |t|
-    t.string   "username"
-    t.string   "address"
-    t.string   "original_ip"
+  create_table "users", force: :cascade do |t|
+    t.string   "username",               limit: 255
+    t.string   "address",                limit: 255
+    t.string   "original_ip",            limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email",                                           default: "",  null: false
-    t.string   "encrypted_password",                              default: "",  null: false
-    t.string   "reset_password_token"
+    t.string   "email",                  limit: 255,                          default: "",  null: false
+    t.string   "encrypted_password",     limit: 255,                          default: "",  null: false
+    t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                                   default: 0
+    t.integer  "sign_in_count",                                               default: 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.string   "confirmation_token"
+    t.string   "current_sign_in_ip",     limit: 255
+    t.string   "last_sign_in_ip",        limit: 255
+    t.string   "confirmation_token",     limit: 255
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email"
-    t.string   "authentication_token"
-    t.float    "reputation",                                      default: 0.0
-    t.decimal  "lat",                    precision: 10, scale: 6
-    t.decimal  "lng",                    precision: 10, scale: 6
+    t.string   "unconfirmed_email",      limit: 255
+    t.string   "authentication_token",   limit: 255
+    t.float    "reputation",                                                  default: 0.0
+    t.decimal  "lat",                                precision: 10, scale: 6
+    t.decimal  "lng",                                precision: 10, scale: 6
   end
 
   add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true
@@ -55,7 +68,7 @@ ActiveRecord::Schema.define(version: 20170402192050) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
-  create_table "votes", force: true do |t|
+  create_table "votes", force: :cascade do |t|
     t.integer  "amount"
     t.integer  "user_id"
     t.integer  "place_id"

@@ -148,9 +148,13 @@ var UserHeaderInfo = React.createClass({
   }
 });
 
-var userHeaderInfo = ReactDOM.render(
+var userHeaderInfoMobile = ReactDOM.render(
   <UserHeaderInfo />,
-  document.getElementById('username')
+  document.getElementById('username-mobile')
+);
+var userHeaderInfoDesktop = ReactDOM.render(
+  <UserHeaderInfo />,
+  document.getElementById('username-desktop')
 );
 
 var createNewPlace = ReactDOM.render(

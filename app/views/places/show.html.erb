@@ -15,5 +15,29 @@
   <%= @place.votes %>
 </p>
 
+<ul>
+  <% unless @place.placepictures.empty? %>
+    <% @place.placepictures.each do |pic| %>
+      <li class="span3" id="picture_<%= pic.id %>">
+      <div class="thumbnail">
+        <%= image_tag pic.image.url %>
+        <div class="caption">
+          <p style="text-align: center;">
+          <%= link_to "Edit picture", pic.image.url %>
+
+          <%=
+            link_to "Delete picture", pic,
+              :data => { :confirm => "Are you sure?" },
+              :method => :delete
+            %>
+          </p>
+        </div>
+      </div>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+
+
 <%= link_to 'Edit', edit_place_path(@place) %> |
 <%= link_to 'Back', places_path %>

@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :votes
+  resources :placepictures
 
   devise_for :users
   resources :users do

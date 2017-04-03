@@ -104,6 +104,14 @@ class PlacesController < ApplicationController
 
     respond_to do |format|
       if @place.save
+
+        if params[:placepictures]
+          #===== The magic is here ;)
+          params[:placepictures].each { |image|
+            @place.placepictures.create(image: image)
+          }
+        end
+
         format.html { redirect_to @place, notice: 'Place was successfully created.' }
         format.json { render :show, status: :created, location: @place }
       else
@@ -118,6 +126,13 @@ class PlacesController < ApplicationController
   def update
     respond_to do |format|
       if @place.update(place_params)
+        if params[:placepictures]
+          # The magic is here ;)
+          params[:placepictures].each { |image|
+            @place.placepictures.create(image: image)
+          }
+        end
+
         format.html { redirect_to @place, notice: 'Place was successfully updated.' }
         format.json { render :show, status: :ok, location: @place }
       else
@@ -145,6 +160,6 @@ class PlacesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def place_params
-      params.require(:place).permit(:title, :description, :lat, :lng, :address)
+      params.require(:place).permit(:title, :description, :lat, :lng, :address, :placepictures)
     end
 end

@@ -37,7 +37,8 @@ var PlaceListItem = React.createClass({
       } else {
         votingBoard.loadPlacesFromServer();
       }
-      userHeaderInfo.getUserFromServer();
+      userHeaderInfoMobile.getUserFromServer();
+      userHeaderInfoDesktop.getUserFromServer();
     }).fail(function(e) {
       console.log(e);
     });
@@ -138,35 +139,59 @@ var PlaceListItem = React.createClass({
       }
     }
   },
+  componentDidMount : function(){
+    console.log("setup ")
+    var currentEl = ReactDOM.findDOMNode(this);
+    $(currentEl).find(".reputation").tooltip({
+      content : 'Reputation',
+      trigger : 'click',
+      placement : "left",
+      title : "Reputation"
+    })
+
+    $(currentEl).find(".recommendations").tooltip({
+      content : 'Reputation',
+      trigger : 'click',
+      placement : "right",
+      title : "Recommendations"
+    })
+  },
   render: function() {
     console.log("PlaceListItem:render");
+
+    var image = ""
+    if(this.props.placePictures.length > 0) {
+      image = this.props.placePictures[0].image;
+    }
+    const divStyle = {
+      backgroundImage: 'url(' + image + ')',
+      backgroundSize: 'cover'
+    };
+
     return (
-      <div className="place">
-        <div className="place-image">
-          Image goes here
+      <div className="place" style={divStyle}>
+        <div className="recommendations">
+          {this.props.recommendations != null ? this.props.recommendations : 0}
         </div>
-        <div className="title">
-          {this.props.title}
+        <div className="reputation" data-toggle="tooltip">
+          {this.props.reputation != null ? this.props.reputation : 0}
         </div>
-        <div className="description">
-          {this.props.description.trunc(40)}
-        </div>
-        <div className="location">
-          Lat: {this.props.lat}
-          <br/>
-          Len: {this.props.lng}
-        </div>
-        <div>
-          Recomendations:  {this.props.recommendations != null ? this.props.recommendations : 0}
-        </div>
-        <div>
-          Reputation:  {this.props.reputation != null ? this.props.reputation : 0}
-        </div>
-        <div className='actions'>
-          <a href={"#"+this.props.itemId} className="btn btn-danger" onClick={this.deleteItem}><span className="glyphicon glyphicon-trash"></span></a>&nbsp;
-          {this.userRecommendHTML()}&nbsp;
-          <a href={"#"+this.props.itemId} className="btn btn-info" onClick={this.viewItem}><span className="glyphicon glyphicon-zoom-in"></span></a>
-          {this.userLikedRecommendationHTML()}
+        <div className='properties'>
+          <div className="title">
+            {this.props.title}
+          </div>
+          <div className="description">
+            {this.props.description.trunc(40)}
+          </div>
+          <div className="location">
+            {this.props.address}
+          </div>
+          <div className='actions'>
+            <a href={"#"+this.props.itemId} className="btn btn-danger" onClick={this.deleteItem}><span className="glyphicon glyphicon-trash"></span></a>&nbsp;
+            {this.userRecommendHTML()}&nbsp;
+            <a href={"#"+this.props.itemId} className="btn btn-info" onClick={this.viewItem}><span className="glyphicon glyphicon-zoom-in"></span></a>
+            {this.userLikedRecommendationHTML()}
+          </div>
         </div>
       </div>
     )
@@ -191,10 +216,12 @@ var PlaceList = React.createClass({
           itemId={place.id}
           lat={place.lat}
           lng={place.lng}
+          address={place.address}
           recommendations={place.recommendations}
           reputation={place.reputation}
           recByUser={place.user_recommended}
           likedStatus={place.liked_status}
+          placePictures={place.placepictures}
           key={place.id}>
         </PlaceListItem>
       );

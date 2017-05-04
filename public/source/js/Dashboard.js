@@ -148,14 +148,23 @@ var UserHeaderInfo = React.createClass({
   }
 });
 
-var userHeaderInfoMobile = ReactDOM.render(
-  <UserHeaderInfo />,
-  document.getElementById('username-mobile')
-);
-var userHeaderInfoDesktop = ReactDOM.render(
-  <UserHeaderInfo />,
-  document.getElementById('username-desktop')
-);
+try {
+  var userHeaderInfoMobile = ReactDOM.render(
+    <UserHeaderInfo />,
+    document.getElementById('username-mobile')
+  );
+} catch (e) {
+  console.log("no username-mobile to initialize");
+}
+
+try {
+  var userHeaderInfoDesktop = ReactDOM.render(
+    <UserHeaderInfo />,
+    document.getElementById('username-desktop')
+  );
+} catch(e) {
+  console.log("no username-desktop to initialize");
+}
 
 var createNewPlace = ReactDOM.render(
   <CreateNewPlace />,

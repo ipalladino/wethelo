@@ -76,15 +76,15 @@ var PlaceListItem = React.createClass({
     if(this.state != undefined) {
       //state is set, use state instead of props
       if(this.state.user_recommended) {
-        return (<a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.removeRecommendationFromPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+        return (<a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.removeRecommendationFromPlace}><span className="glyphicon glyphicon-heart"></span></a>)
       } else {
-        return (<a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.recommendPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+        return (<a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.recommendPlace}><span className="glyphicon glyphicon-heart"></span></a>)
       }
     } else {
       if(this.props.recByUser) {
-        return (<a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.removeRecommendationFromPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+        return (<a href={"#"+this.props.itemId} className="btn btn-success" onClick={this.removeRecommendationFromPlace}><span className="glyphicon glyphicon-heart"></span></a>)
       } else {
-        return (<a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.recommendPlace}><span className="glyphicon glyphicon-arrow-up"></span></a>)
+        return (<a href={"#"+this.props.itemId} className="btn btn-default" onClick={this.recommendPlace}><span className="glyphicon glyphicon-heart"></span></a>)
       }
     }
 
@@ -144,17 +144,25 @@ var PlaceListItem = React.createClass({
     var currentEl = ReactDOM.findDOMNode(this);
     $(currentEl).find(".reputation").tooltip({
       content : 'Reputation',
-      trigger : 'click',
+      trigger : 'hover',
       placement : "left",
       title : "Reputation"
     })
 
     $(currentEl).find(".recommendations").tooltip({
       content : 'Reputation',
-      trigger : 'click',
+      trigger : 'hover',
       placement : "right",
       title : "Recommendations"
     })
+  },
+  getInitialState : function(){
+    return {
+      recommendations : this.props.recommendations,
+      reputation : this.props.reputation,
+      liked_status : this.props.likedStatus,
+      user_recommended : this.props.recByUser
+    }
   },
   render: function() {
     console.log("PlaceListItem:render");
@@ -171,10 +179,10 @@ var PlaceListItem = React.createClass({
     return (
       <div className="place" style={divStyle}>
         <div className="recommendations">
-          {this.props.recommendations != null ? this.props.recommendations : 0}
+          {this.state.recommendations != null ? this.state.recommendations : 0}
         </div>
         <div className="reputation" data-toggle="tooltip">
-          {this.props.reputation != null ? this.props.reputation : 0}
+          {this.state.reputation != null ? this.state.reputation : 0}
         </div>
         <div className='properties'>
           <div className="title">
@@ -187,10 +195,12 @@ var PlaceListItem = React.createClass({
             {this.props.address}
           </div>
           <div className='actions'>
-            <a href={"#"+this.props.itemId} className="btn btn-danger" onClick={this.deleteItem}><span className="glyphicon glyphicon-trash"></span></a>&nbsp;
-            {this.userRecommendHTML()}&nbsp;
-            <a href={"#"+this.props.itemId} className="btn btn-info" onClick={this.viewItem}><span className="glyphicon glyphicon-zoom-in"></span></a>
-            {this.userLikedRecommendationHTML()}
+            <div className="recommend">
+              {this.userRecommendHTML()}
+            </div>
+            <div className="like-dislike">
+              {this.userLikedRecommendationHTML()}
+            </div>
           </div>
         </div>
       </div>
@@ -205,10 +215,12 @@ var PlaceListItem = React.createClass({
 var PlaceList = React.createClass({
   render: function() {
     console.log("PlaceList:render");
+    /*
     var sorted = this.props.data.sort(function(a, b) {
-      return b.recommendations - a.recommendations;
+      return a.reputation - b.reputation;
     });
-    var placeNodes = sorted.map(function (place) {
+    */
+    var placeNodes = this.props.data.map(function (place) {
       return (
         <PlaceListItem
           title={place.title}

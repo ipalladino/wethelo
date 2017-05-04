@@ -20,6 +20,6 @@ class ApplicationController < ActionController::Base
     added_attrs = [:username, :email, :password, :password_confirmation, :remember_me]
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :lat, :lng, :address,:email, :password, :password_confirmation) }
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :lat, :lng, :address, :email, :password, :password_confirmation) }
-    devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :lat, :lng, :address, :email, :password, :password_confirmation) }
+    devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :lat, :lng, :address, :email, :password, :password_confirmation, :current_password) }
   end
 end

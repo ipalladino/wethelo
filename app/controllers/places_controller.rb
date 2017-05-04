@@ -80,7 +80,7 @@ class PlacesController < ApplicationController
   # GET /places
   # GET /places.json
   def index
-    @places = Place.all
+    @places = Place.all.order("reputation DESC")
   end
 
   # GET /places/1

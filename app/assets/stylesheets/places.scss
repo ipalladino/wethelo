@@ -11,6 +11,7 @@
     margin-bottom:-10px;
     padding:10px;
     color:#fff;
+    border-top:1px solid rgba(255,255,255,.3);
     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,000000+100&0.37+0,0.76+59,0.9+99 */
     background: -moz-linear-gradient(top, rgba(0,0,0,0.37) 0%, rgba(0,0,0,0.76) 59%, rgba(0,0,0,0.9) 99%, rgba(0,0,0,0.9) 100%); /* FF3.6-15 */
     background: -webkit-linear-gradient(top, rgba(0,0,0,0.37) 0%,rgba(0,0,0,0.76) 59%,rgba(0,0,0,0.9) 99%,rgba(0,0,0,0.9) 100%); /* Chrome10-25,Safari5.1-6 */
@@ -20,6 +21,7 @@
   .title {
     margin-top:10px;
     font-weight: 600;
+    font-size:1.3em;
   }
   .recommendations, .reputation {
     color:#fff;
@@ -38,6 +40,23 @@
     right:0px;
     font-size:40px;
     font-weight: 900;
+  }
+  .actions {
+    position: relative;
+    height: 50px;
+    .recommend {
+      position: absolute;
+      left:0px;
+      bottom:0px;
+    }
+    .like-dislike {
+      position: absolute;
+      right:0px;
+      bottom:0px;
+      a {
+        margin-left:10px;
+      }
+    }
   }
 }
 

@@ -38,11 +38,16 @@ class RecommendationsController < ApplicationController
           #we gotta make sure its the only ones that actually RECOMMENDED
           recommendations = @place.votes.where(votetype: 0)
           recommendations.each do |recommendation|
+            #we gotta exclude the current_user, as he should not get rep from his own vote
             puts "User #{recommendation.user.username} gets reputation!"
             u = recommendation.user
-            u.reputation = u.reputation != nil ? u.reputation+1 : 1
-            u.save
+            if(u.id != current_user.id)
+              u.reputation = u.reputation != nil ? u.reputation+1 : 1
+              u.save
+            end
           end
+
+          @place.calculate_reputation
 
           render :show, status: :ok, location: @place, template: "places/show"
           return
@@ -62,11 +67,15 @@ class RecommendationsController < ApplicationController
         recommendations.each do |recommendation|
           puts "User #{recommendation.user.username} gets reputation!"
           u = recommendation.user
-          u.reputation = u.reputation != nil ? u.reputation+1 : 1
-          u.save
+          if(u.id != current_user.id)
+            u.reputation = u.reputation != nil ? u.reputation+1 : 1
+            u.save
+          end
         end
       end
     end
+
+    @place.calculate_reputation
 
     if @v.save
       render :show, status: :ok, location: @place, template: "places/show"
@@ -104,10 +113,13 @@ class RecommendationsController < ApplicationController
           recommendations.each do |recommendation|
             puts "User #{recommendation.user.username} gets reputation!"
             u = recommendation.user
-            u.reputation = u.reputation != nil ? u.reputation-1 : -1
-            u.save
+            if(u.id != current_user.id)
+              u.reputation = u.reputation != nil ? u.reputation-1 : -1
+              u.save
+            end
           end
 
+          @place.calculate_reputation
           render :show, status: :ok, location: @place, template: "places/show"
           return
         end
@@ -125,12 +137,15 @@ class RecommendationsController < ApplicationController
         recommendations.each do |recommendation|
           puts "User #{recommendation.user.username} gets reputation!"
           u = recommendation.user
-          u.reputation = u.reputation != nil ? u.reputation-1 : -1
-          u.save
+          if(u.id != current_user.id)
+            u.reputation = u.reputation != nil ? u.reputation-1 : -1
+            u.save
+          end
         end
       end
     end
 
+    @place.calculate_reputation
     if @v.save
       render :show, status: :ok, location: @place, template: "places/show"
     else
